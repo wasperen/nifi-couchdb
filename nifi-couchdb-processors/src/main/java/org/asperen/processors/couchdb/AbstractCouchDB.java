@@ -139,6 +139,7 @@ public abstract class AbstractCouchDB extends AbstractProcessor {
 	public void onStopped() {
 		if (this.dbClient != null)
 			try {
+				dbClient.shutdown();
 				dbClient.close();
 			} catch (IOException e) {
 				getLogger().warn("exception when closing CouchDB connection");
