@@ -9,8 +9,11 @@ import java.util.Set;
 
 import org.apache.nifi.annotation.lifecycle.OnStopped;
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.flowfile.FlowFile;
+import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
+import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
@@ -134,7 +137,22 @@ public abstract class AbstractCouchDB extends AbstractProcessor {
 			throw new ProcessException(e);
 		}
 	}
-
+    
+    protected final FlowFile setCoreAttributes(ProcessSession session, FlowFile flowFile, String filename) {
+		flowFile = session.putAttribute(flowFile, CoreAttributes.FILENAME.key(), filename);
+		flowFile = session.putAttribute(flowFile, CoreAttributes.PATH.key(), this.dbClient.getDBUri().toString());
+		flowFile = session.putAttribute(flowFile, CoreAttributes.MIME_TYPE.key(), "application/json");
+		return flowFile;
+    }
+    
+    protected final FlowFile createFlowFile(ProcessSession session, String filename) {
+    	return setCoreAttributes(session, session.create(), filename);
+    }
+    
+    protected final FlowFile createFlowFile(ProcessSession session, FlowFile parent, String filename) {
+    	return setCoreAttributes(session, session.create(parent), filename);
+    }
+    
 	@OnStopped
 	public void onStopped() {
 		if (this.dbClient != null)

@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.flowfile.FlowFile;
-import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.Relationship;
@@ -114,9 +113,7 @@ public class PutCouchDBDocument extends AbstractCouchDBDocument {
 				}
 			});
 		}
-		flowFile = session.putAttribute(flowFile, "filename", save.getResponse().getId() + "@" + save.getResponse().getRev());
-		flowFile = session.putAttribute(flowFile, "path", dbClient.getDBUri().toString());
-		flowFile = session.putAttribute(flowFile, CoreAttributes.MIME_TYPE.key(), "application/json");
+		flowFile = setCoreAttributes(session, flowFile, save.getResponse().getId() + "@" + save.getResponse().getRev());
 		session.transfer(flowFile, SUCCESS);
 	}
 

@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.flowfile.FlowFile;
-import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.Relationship;
@@ -118,9 +117,7 @@ public class GetCouchDBDocument extends AbstractCouchDBDocument {
 		} catch (IOException e) {
 			throw new ProcessException(e);
 		}
-		flowFile = session.putAttribute(flowFile, "filename", load.getId() + (load.getRev() != null ? "@" + load.getRev() : ""));
-		flowFile = session.putAttribute(flowFile, "path", dbClient.getDBUri().toString());
-		flowFile = session.putAttribute(flowFile, CoreAttributes.MIME_TYPE.key(), "application/json");
+		flowFile = setCoreAttributes(session, flowFile, load.getId() + (load.getRev() != null ? "@" + load.getRev() : ""));
 		session.transfer(flowFile, SUCCESS);
 	}
 
