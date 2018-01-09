@@ -1,103 +1,23 @@
 package org.asperen.processors.couchdb;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
-import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.flowfile.FlowFile;
-import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
-import org.apache.nifi.processor.io.OutputStreamCallback;
-import org.apache.nifi.processor.util.StandardValidators;
-import org.lightcouch.Page;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 
 @Tags({"couchdb", "ingres"})
 @CapabilityDescription("Retrieves all documents from a CouchDB database. "
 		+ "Either in one FlowFile or in separate pages with a maximum number of rows.")
-public class GetCouchDBAllDocuments extends AbstractCouchDB {
+public class GetCouchDBAllDocuments extends AbstractCouchDBView {
 
-	public static final PropertyDescriptor COUCHDB_PAGINATED= new PropertyDescriptor
-            .Builder().name("COUCHDB_PAGINATED")
-            .displayName("Paginated")
-            .description("Indicate if the result should come in pages (defaults to false).")
-            .required(false)
-            .defaultValue("false")
-            .addValidator(StandardValidators.BOOLEAN_VALIDATOR)
-            .build();
-	
-	public static final PropertyDescriptor COUCHDB_PAGESIZE = new PropertyDescriptor
-            .Builder().name("COUCHDB_PAGESIZE")
-            .displayName("Page size")
-            .description("The maximum number of rows to load into a single page flow-file (defaults to 100).")
-            .required(false)
-            .defaultValue("100")
-            .addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-            .build();
-	
-	private static final String VIEW_ALL_DOCS = "_all_docs";
-
-	@Override
-	protected void initDescriptors(List<PropertyDescriptor> descriptors) {
-		descriptors.add(COUCHDB_PAGINATED);
-		descriptors.add(COUCHDB_PAGESIZE);
-		super.initDescriptors(descriptors);
-	}
+	static final String VIEW_ALL_DOCS = "_all_docs";
 
 	@Override
 	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
-		createDbClient(context);
-		
-		try {
-			if (context.getProperty(COUCHDB_PAGINATED).asBoolean()) {
-				final Gson gson = new GsonBuilder().create();
-				int pageSize = context.getProperty(COUCHDB_PAGESIZE).asInteger();
-				String nextPage = null;
-				do {
-					final Page<JsonObject> page = dbClient.view(VIEW_ALL_DOCS).queryPage(pageSize, nextPage, JsonObject.class);
-					final String jsonPage = gson.toJson(page);
-					
-					FlowFile flowFile = session.create();
-					flowFile = session.putAttribute(flowFile, "filename", VIEW_ALL_DOCS + "_" + String.valueOf(page.getPageNumber()));
-					flowFile = session.putAttribute(flowFile, "path", dbClient.getDBUri().toString());
-					flowFile = session.putAttribute(flowFile, CoreAttributes.MIME_TYPE.key(), "application/json");
-					flowFile = session.write(flowFile, new OutputStreamCallback() {
-						
-						@Override
-						public void process(OutputStream out) throws IOException {
-							out.write(jsonPage.getBytes());
-						}
-						
-					});
-					session.transfer(flowFile, SUCCESS);
-					
-					nextPage = page.isHasNext() ? page.getNextParam() : null;
-				} while (nextPage != null);
-			} else {
-				FlowFile flowFile = session.create();
-				flowFile = session.putAttribute(flowFile, "filename", VIEW_ALL_DOCS);
-				flowFile = session.putAttribute(flowFile, "path", this.dbClient.getDBUri().toString());
-				flowFile = session.putAttribute(flowFile, CoreAttributes.MIME_TYPE.key(), "application/json");
-				flowFile = session.importFrom(this.dbClient.view(VIEW_ALL_DOCS).queryForStream(), flowFile);
-				session.transfer(flowFile, SUCCESS);
-			} 
-		} catch (RuntimeException e) {
-			context.yield();
-			session.rollback();
-			getLogger().error("Failed to retrieve all documents", e);
-			throw new ProcessException(e);
-		}
-		
-		session.commit();
+		retrieveView(context, session, VIEW_ALL_DOCS);
 	}
 
+	
 }

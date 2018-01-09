@@ -15,7 +15,7 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
-import org.asperen.processors.couchdb.callback.AbstractCouchDBInputStreamCallback;
+import org.asperen.processors.couchdb.callback.DocumentFromCouchDB;
 import org.lightcouch.NoDocumentException;
 
 import com.google.gson.JsonObject;
@@ -34,25 +34,6 @@ public class GetCouchDBDocument extends AbstractCouchDBDocument {
             .name("no_document")
             .description("Outputs the FlowFiles that refer to a non-existing document.")
             .build();
-	
-	private abstract class DocumentFromCouchDB extends AbstractCouchDBInputStreamCallback {
-		protected String id = null;
-		protected String rev = null;
-		protected InputStream documentStream = null;
-		
-		public String getId() {
-			return id;
-		}
-
-		public String getRev() {
-			return rev;
-		}
-		
-		public InputStream getDocumentStream() {
-			return documentStream;
-		}
-		
-	}
 	
 	private class HeadOnlyFromCouchDB extends DocumentFromCouchDB {
 
