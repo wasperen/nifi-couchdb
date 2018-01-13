@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
@@ -19,6 +20,7 @@ import org.lightcouch.NoDocumentException;
 
 import com.google.gson.JsonObject;
 
+@Tags({"couchdb", "ingres"})
 @CapabilityDescription("Retrieves a document from a CouchDB database. Expects the content of a Flow File to contain"
 		+ " a JSON document description like {\"id\":\"some id\"} or, to retrieve a specific revision:"
 				+ "{\"id\": \"some id\", \"rev\":\"some revision\"}. Only when the property \"Include document\" is "

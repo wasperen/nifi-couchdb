@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.Set;
 
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
@@ -20,6 +21,7 @@ import org.lightcouch.Response;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+@Tags({"couchdb", "put", "store", "update", "nosql"})
 @CapabilityDescription("Puts a document to a CouchDB. If the property \"Include document\" is set to true, the resulting document is fetched "
 		+ "from the database after storing and sent out on the SUCCESS relationship. If that property is false (the default), only the documents' "
 		+ "_id and _rev are sent out on relationship SUCCESS.")

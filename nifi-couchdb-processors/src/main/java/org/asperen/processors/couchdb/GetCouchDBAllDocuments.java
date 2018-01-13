@@ -8,9 +8,8 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.lightcouch.View;
 
 
-@Tags({"couchdb", "ingres"})
-@CapabilityDescription("Retrieves all documents from a CouchDB database. "
-		+ "Either in one FlowFile or in separate pages with a maximum number of rows.")
+@Tags({"couchdb", "ingres", "get", "nosql"})
+@CapabilityDescription("Retrieves all documents from a CouchDB database. ")
 public class GetCouchDBAllDocuments extends AbstractCouchDBView {
 
 	static final String VIEW_ALL_DOCS = "_all_docs";

@@ -2,6 +2,8 @@ package org.asperen.processors.couchdb;
 
 import java.util.List;
 
+import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.ValidationContext;
 import org.apache.nifi.components.ValidationResult;
@@ -11,6 +13,9 @@ import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.lightcouch.View;
 
+@Tags({"couchdb", "ingres", "get", "nosql"})
+@CapabilityDescription("Retrieves all documents from a CouchDB database view. View name is a property "
+		+ "and the response from CouchDB is passed through as a single FlowFile.")
 public class GetCouchDBView extends AbstractCouchDBView {
 
 	private static final Validator VIEWNAME_VALIDATOR = new Validator() {

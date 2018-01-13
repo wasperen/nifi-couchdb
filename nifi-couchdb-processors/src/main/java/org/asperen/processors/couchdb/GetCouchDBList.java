@@ -2,6 +2,8 @@ package org.asperen.processors.couchdb;
 
 import java.util.List;
 
+import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
@@ -9,6 +11,10 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.lightcouch.View;
 
+@Tags({"couchdb", "ingres", "get", "nosql"})
+@CapabilityDescription("Retrieves all documents from a CouchDB database list. View and list names are a property "
+		+ "as well as the mime-type that is expected. "
+		+ "The response from CouchDB is passed through as a single FlowFile.")
 public class GetCouchDBList extends GetCouchDBView {
 	
 	public static final PropertyDescriptor COUCHDB_LISTNAME = new PropertyDescriptor
