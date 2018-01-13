@@ -16,3 +16,4 @@ org.asperen.processors.couchdb.GetCouchDBAllDocuments
 org.asperen.processors.couchdb.PutCouchDBDocument
 org.asperen.processors.couchdb.GetCouchDBDocument
 org.asperen.processors.couchdb.GetCouchDBView
+org.asperen.processors.couchdb.GetCouchDBList

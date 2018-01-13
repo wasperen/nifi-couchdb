@@ -9,6 +9,7 @@ import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
+import org.lightcouch.View;
 
 public class GetCouchDBView extends AbstractCouchDBView {
 
@@ -48,8 +49,10 @@ public class GetCouchDBView extends AbstractCouchDBView {
 
 	@Override
 	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
+		createDbClient(context);
 		String viewName = context.getProperty(COUCHDB_VIEWNAME).getValue();
-		retrieveView(context, session, viewName);
+		View view = this.dbClient.view(viewName);
+		retrieveView(context, session, viewName, view);
 	}
 
 }
