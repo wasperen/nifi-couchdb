@@ -20,7 +20,7 @@ import org.lightcouch.NoDocumentException;
 
 import com.google.gson.JsonObject;
 
-@Tags({"couchdb", "ingres"})
+@Tags({"couchdb", "ingres", "get", "nosql"})
 @CapabilityDescription("Retrieves a document from a CouchDB database. Expects the content of a Flow File to contain"
 		+ " a JSON document description like {\"id\":\"some id\"} or, to retrieve a specific revision:"
 				+ "{\"id\": \"some id\", \"rev\":\"some revision\"}. Only when the property \"Include document\" is "
