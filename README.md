@@ -8,3 +8,6 @@ It is still early days -- but we have the following processors working:
   * GetCouchDBView -- gets the content of a View
   * GetCouchDBList -- gets the content of a View, passed through a List function in the same design document
   * PutCouchDBDocument -- puts the FlowFile into CouchDB and returns the document as it is stored
+
+*NOTE:* relies on an altered lightcouch (http://www.lightcouch.org) implementation with some changes that have not gone into the formal lightcouch branch.
+The fork can be found here: https://github.com/wasperen/LightCouch
